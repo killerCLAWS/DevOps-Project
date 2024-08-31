@@ -1,0 +1,81 @@
+pipeline {
+    agent any
+
+    environment {
+        TF_DIR = 'terraform/aws'  // Directory containing Terraform configuration
+        S3_BUCKET = 'test-s3-my-project'  // S3 bucket name for storing Terraform state
+        S3_KEY = 'terraform.tfstate'  // The key for the tfstate file in the S3 bucket
+        REGION = 'us-east-1'  // Specify the AWS region
+    }
+
+    stages {
+        stage('Configure Terraform Backend') {
+            steps {
+                script {
+                    dir(TF_DIR) {
+                        // Add S3 backend configuration to Terraform
+                        sh '''
+                        cat <<EOF > backend.tf
+                        terraform {
+                          backend "s3" {
+                            bucket = "${S3_BUCKET}"
+                            key    = "${S3_KEY}"
+                            region = "${REGION}"
+                          }
+                        }
+                        EOF
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                script {
+                    dir(TF_DIR) {
+                        // Initialize Terraform and pull the state from S3
+                        sh 'terraform init -backend-config="bucket=${S3_BUCKET}" -backend-config="key=${S3_KEY}" -backend-config="region=${REGION}"'
+                    }
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                script {
+                    dir(TF_DIR) {
+                        // Create a plan and save it
+                        sh 'terraform plan -out=tfplan'
+                    }
+                }
+            }
+        }
+
+        stage('Approval') {
+            steps {
+                script {
+                    // Wait for manual approval to proceed
+                    input message: 'Do you want to apply the Terraform changes?', ok: 'Approve'
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                script {
+                    dir(TF_DIR) {
+                        // Apply the plan and update the state in S3
+                        sh 'terraform apply tfplan'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()  // Clean the workspace after the pipeline finishes
+        }
+    }
+}
