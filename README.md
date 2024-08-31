@@ -36,6 +36,9 @@ Jenkinsfiles
 1) Jenkinsfile-infra : Steps to provision infrasturece using terraform to deploy K8s cluster and Create dynamodb table.
 2) Jenkinsfile-build : Steps to build the helm chart of the application and push the package in Jfrog.
 
-     
+#Moniotoring Setup -----------------------
+
+Using kube-prometheus-stack to deploy prometehus, grafana, pushgateway, service-monitor
+https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack/
 
 
