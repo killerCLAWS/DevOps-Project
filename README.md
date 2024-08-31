@@ -1,7 +1,7 @@
 # DevOps-Project
 DevOps-Project
 
-# Configuring Jenkins ---------------------------------------------------------------------------------
+# Configuring Jenkins 
 
 Build the Jenkins Agent Image and push Docker Hub or ECR
  >> docker build -t custom-jenkins-agent:latest . ## Using /Dockerfile in repo
@@ -24,7 +24,7 @@ Access Jenkins Dashboard and install required Plugins
     Use Docker Image from above step: custom-jenkins-agent:version
 
 
-# Steps to configure the Build Jenkins Job setup ------------------------------------------------------
+# Steps to configure the Build Jenkins Job setup 
 
 1) Configure Jenkins freestyle job, using [ Label Expression: docker-agent ] to pick "**jenkinsfile**"
 2) Jenkins configuration with SCM <https://github.com/killerCLAWS/DevOps-Project/> to pick "jenkinfile" to build job.
@@ -36,7 +36,9 @@ Jenkinsfiles
 1) Jenkinsfile-infra : Steps to provision infrasturece using terraform to deploy K8s cluster and Create dynamodb table.
 2) Jenkinsfile-build : Steps to build the helm chart of the application and push the package in Jfrog.
 
-#Moniotoring Setup -----------------------
+-------------------------------------------------------------------------------------------------------
+
+# Moniotoring Setup 
 
 Using kube-prometheus-stack to deploy prometehus, grafana, pushgateway, service-monitor
 https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack/
