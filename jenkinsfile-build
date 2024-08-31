@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+
+    environment {
+        HELM_CHART_DIR = 'k8s/helm-chart/application-name'  // Path to the Helm chart
+        CHART_NAME = 'application-name'  // Name of your Helm chart
+        CHART_VERSION = '1.0.0'  // Version of the Helm chart, can be dynamically set if needed
+        REPO_URL = 'https://your.jfrog.io/artifactory/helm-repo'  // JFrog Artifactory Helm repository URL
+        REPO_NAME = 'jfrog-helm-repo'  // Name of the Helm repository in Artifactory
+        JFROG_USERNAME = credentials('jfrog-username')  // Jenkins credentials ID for JFrog username
+        JFROG_PASSWORD = credentials('jfrog-password')  // Jenkins credentials ID for JFrog password
+    }
+
+    stages {
+        stage('Helm Lint') {
+            steps {
+                script {
+                    dir(HELM_CHART_DIR) {
+                        // Lint the Helm chart to check for issues
+                        sh 'helm lint .'
+                    }
+                }
+            }
+        }
+
+        stage('Helm Package') {
+            steps {
+                script {
+                    dir(HELM_CHART_DIR) {
+                        // Package the Helm chart
+                        sh "helm package . --version ${CHART_VERSION} --app-version ${CHART_VERSION}"
+                    }
+                }
+            }
+        }
+
+        stage('Push to JFrog Artifactory') {
+            steps {
+                script {
+                    // Configure Helm to add and authenticate to the JFrog repository
+                    sh """
+                    helm repo add ${REPO_NAME} ${REPO_URL} --username ${JFROG_USERNAME} --password ${JFROG_PASSWORD}
+                    helm push ${CHART_NAME}-${CHART_VERSION}.tgz ${REPO_NAME}
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()  // Clean the workspace after the pipeline finishes
+        }
+    }
+}
