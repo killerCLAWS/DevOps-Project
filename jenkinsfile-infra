@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'docker-agent' 
+    }
 
     environment {
         TF_DIR = 'terraform/aws'  // Directory containing Terraform configuration
