@@ -1,47 +1,25 @@
 apiVersion: v2
 name: test-application
 description: A Helm chart for Kubernetes to deploy the Test Application.
-
-# The version of the chart. This version number should be incremented when you make changes to the chart.
 version: 1.0.0
-
-# The version of the application this chart deploys.
 appVersion: 1.0.0
 
-# Optional: A list of keywords that describe the application
 keywords:
-  - test
   - application
   - helm
   - kubernetes
-
-# Optional: The home URL for the application
-home: https://example.com/test-application
-
-# Optional: The source code repository URL
 sources:
-  - https://github.com/your-org/test-application
-
-# Optional: The maintainers of the chart
+  - https://github.com/killerclaws/DevOps-Project
 maintainers:
   - name: Your Name
-    email: your.email@example.com
+    email: ankit.aj9935@gmail.com
 
-# Optional: A URL to the icon that represents this chart
-icon: https://example.com/path-to-your-icon.png
-
-# Optional: Dependencies
-# You can list any dependencies that this chart relies on. For example, if your application
-# uses a MySQL database, you could specify a dependency on the MySQL Helm chart.
-# dependencies:
-#   - name: mysql
-#     version: 8.0.0
-#     repository: "https://charts.bitnami.com/bitnami"
-#     condition: mysql.enabled
+dependencies:
+  - name: mysql
+    version: 8.0.0
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: mysql.enabled
 
 # The Kubernetes version that this chart supports
 kubeVersion: ">=1.16.0"
 
-# Optional: A list of annotations for the chart.
-# annotations:
-#   category: "Application"
