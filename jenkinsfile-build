@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'docker-agent' 
+    }
 
     environment {
         HELM_CHART_DIR = 'k8s/helm-chart/application-name'  // Path to the Helm chart
