@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-application
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/killerclaws/DevOps-Project.git  # Helm chart repository URL
+    targetRevision: HEAD  # Branch or tag to track, such as "main" or a specific tag
+    path: k8s/helm-chart/demo-app  # Path to the Helm chart in the repo
+    helm:
+      valueFiles:
+        - values.yaml  # Optional, specify any additional values files if needed
+  destination:
+    server: https://kubernetes.default.svc 
+    namespace: kc  # Namespace where the Helm chart will be deployed
+  syncPolicy:
+    automated:
+      prune: true  # Automatically delete resources that are no longer tracked by the chart
+      selfHeal: true  # Automatically correct any drift between live and desired state
